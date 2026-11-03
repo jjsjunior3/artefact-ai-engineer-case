@@ -44,3 +44,14 @@ The catalog is a local snapshot. The policy index is tied to the supplied PDF la
 ## Use of coding assistants
 
 I used Codex to inspect the challenge files, implement and test the CLI, catalog and policy tools, integrate LangGraph, and document the project. I chose the CLI and shaped the recommendation rules, including the selection across price points and the starting-price fallback when nothing matches the budget. Live tests informed changes to catalog filtering and policy citation instructions.
+
+## Optional browser interface
+
+Install the optional dependency and run the Streamlit chat with the same paths and configuration as the CLI.
+
+```bash
+python -m pip install -r requirements-web.txt
+python -m streamlit run web.py -- "/path/to/data" "/path/to/store-policy.pdf"
+```
+
+The browser chat uses the same LangGraph agent and keeps each conversation in its own Streamlit session.
