@@ -1,3 +1,4 @@
+import json
 import csv
 from decimal import Decimal
 from pathlib import Path
@@ -10,7 +11,7 @@ def read_rows(data_dir: Path, table: str) -> list[dict[str, str]]:
 
 
 def recommend(
-    data_dir: Path, category: str, ceiling: Decimal
+    data_dir: Path, category: str, ceiling: Decimal, *, strings: str | None = None, amplified: bool = False
 ) -> tuple[int, list[dict[str, str]], dict[str, str] | None]:
     if not ceiling.is_finite() or ceiling < 0:
         raise ValueError("The price ceiling must be finite and nonnegative.")
@@ -20,12 +21,22 @@ def recommend(
         for row in read_rows(data_dir, "categories")
         if row["name"].casefold() == category.strip().casefold()
     }
+    def matches_specs(row):
+        if strings is None and not amplified:
+            return True
+        specs = json.loads(row.get("specs") or "{}")
+        return (
+            (strings is None or specs.get("strings") == strings)
+            and (not amplified or specs.get("electronics") == "yes")
+        )
+
     available = sorted(
         (
             row for row in read_rows(data_dir, "products")
             if row["category_id"] in category_ids
             and row["status"] == "active"
             and int(row["stock_quantity"]) > 0
+            and matches_specs(row)
         ),
         key=lambda row: (Decimal(row["price_brl"]), int(row["product_id"])),
     )
@@ -34,6 +45,8 @@ def recommend(
         (row for row in available if ceiling < Decimal(row["price_brl"]) <= ceiling * Decimal("1.10")),
         None,
     )
+    if not within:
+        return 0, [], available[0] if available else None
     if len(within) <= 4:
         return len(within), within, above
 
