@@ -2,6 +2,7 @@ import os
 from decimal import Decimal
 from pathlib import Path
 
+from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
@@ -55,6 +56,7 @@ For personal order status, direct the customer to the store's support channel.
 
 
 def make_responder(data_dir: Path, manual: Path):
+    load_dotenv(Path(__file__).with_name(".env"), override=False)
     model = ChatOpenAI(
         model=os.getenv("OPENROUTER_MODEL", "openai/gpt-4.1-mini"),
         api_key=os.environ["OPENROUTER_API_KEY"],
