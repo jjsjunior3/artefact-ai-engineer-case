@@ -2,7 +2,7 @@ from collections.abc import Callable
 
 
 def run_chat(respond: Callable[[str], str]) -> None:
-    print("Empório da Música | Digite 'sair' para encerrar.")
+    print("Oi! Sou o Léo, assistente virtual de IA da Empório da Música. Como posso ajudar?\nDigite 'sair' para encerrar.")
     while True:
         try:
             message = input("Você: ").strip()
@@ -13,7 +13,7 @@ def run_chat(respond: Callable[[str], str]) -> None:
         if message.casefold() == "sair":
             break
         if message:
-            print(f"Empório: {respond(message)}")
+            print(f"Léo: {respond(message)}")
 
 
 if __name__ == "__main__":
