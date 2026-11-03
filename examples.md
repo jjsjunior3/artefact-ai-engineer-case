@@ -25,3 +25,9 @@ The same response cited page 4 of the policy manual. The assistant applied the d
 **Customer:** Qual é a capital da França?
 
 **Assistant:** Essa não é uma informação relacionada ao Empório da Música. Posso ajudar você com dúvidas sobre nossos produtos, políticas ou serviços?
+
+## 4. Price and stock for a named instrument
+
+**Customer** — Oi! Quanto custa o Takamine GD20 e tem em estoque?
+
+**Assistant excerpt** — O Takamine GD20 custa R$ 2.199 aqui na loja e temos 5 unidades em estoque.

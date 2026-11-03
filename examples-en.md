@@ -23,3 +23,11 @@ The full reply cited page 4 of the policy manual.
 **Customer** — What is the capital of France?
 
 **Assistant** — That question is outside the scope of Empório da Música. I can help with questions about our products, policies, or services.
+
+## 4. Price and stock for a named instrument
+
+**Customer** — Hi! How much does the Takamine GD20 cost, and is it in stock?
+
+**Assistant excerpt** — The Takamine GD20 costs R$2,199 here at the store, and we have five units in stock.
+
+The named-model lookup provided the price and stock. This excerpt was translated from the original Portuguese run.

@@ -6,7 +6,7 @@ import unittest
 
 from pypdf import PdfWriter
 
-from catalog import recommend
+from catalog import find_products, recommend
 from policies import get_policy_page, load_policy_pages
 
 
@@ -45,6 +45,18 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(total, 2)
         self.assertEqual([row["price_brl"] for row in products], ["100", "200"])
         self.assertIsNone(extra)
+
+    def test_named_lookup_returns_only_active_models(self):
+        self.write_table(
+            "products", ["name", "status", "price_brl", "stock_quantity"],
+            [("Takamine GD20 Natural", "active", "2199", 5),
+             ("Takamine GD20 Discontinued", "inactive", "1999", 0)],
+        )
+        matches = find_products(self.data, " takamine gd20 ")
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["price_brl"], "2199")
+        self.assertEqual(matches[0]["stock_quantity"], "5")
+        self.assertEqual(find_products(self.data, " "), [])
 
     def test_invalid_ceiling(self):
         with self.assertRaises(ValueError):
