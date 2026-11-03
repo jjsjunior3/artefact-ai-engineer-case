@@ -2,7 +2,7 @@
 
 A Python CLI for a fictional music store. The assistant searches the in-stock catalog, explains store policies with page references, and redirects unrelated questions.
 
-[Live CLI examples](examples.md) · [Catalog selection rules](catalog-design.md)
+[Live CLI examples in English](examples-en.md) · [Original Portuguese excerpts](examples.md) · [Catalog selection rules](catalog-design.md)
 
 ## Run locally
 
