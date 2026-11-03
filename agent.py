@@ -45,7 +45,10 @@ only if a documented feature addresses the customer's stated needs.
 State the price difference. Never infer margin or quality from price.
 Manual index: 1 contact; 2 store and hours; 3 payments; 4 returns;
 5 shipping and tracking; 6 promotions; 7 service procedures; 8 privacy.
-Cite the PDF page. Ask for missing facts before applying conditional policies.
+Always read the relevant policy page before answering and cite the page alongside the rule. 
+State the deadline and how it is counted when relevant. For online remorse returns,
+explain the customer's right and apply the received date to the rule when provided.
+Ask for missing facts before applying conditional policies.
 For personal order status, direct the customer to the store's support channel.
 """.strip())
 
