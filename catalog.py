@@ -55,3 +55,12 @@ def recommend(
     midpoint = median(Decimal(row["price_brl"]) for row in within)
     middle = min(within[2:-1], key=lambda row: abs(Decimal(row["price_brl"]) - midpoint))
     return len(within), [*within[:2], middle, within[-1]], above
+def find_products(data_dir: Path, name: str) -> list[dict[str, str]]:
+    """Find active products by case-insensitive name or model substring."""
+    query = name.strip().casefold()
+    if not query:
+        return []
+    return [
+        row for row in read_rows(data_dir, "products")
+        if row["status"] == "active" and query in row["name"].casefold()
+    ]

@@ -25,9 +25,9 @@ Before launching the CLI, copy `.env.example` to `.env` in the repository root a
 
 - **CLI and LangGraph.** The terminal keeps setup small. LangGraph makes the model-to-tool loop explicit. The graph executes catalog or policy calls, feeds their results back to the model, and stops when the model returns a final answer.
 - **GPT-4.1 mini via OpenRouter.** The model supports function calling, and OpenRouter uses the same API style used in my previous policy assistant project. The model interprets the question and writes the reply. Python handles the catalog filters, counts, and price selection.
-- **Catalog.** Join CSV rows by category ID and filter active products with stock. Use decimal arithmetic for prices and apply requested string type and amplification filters before counting. Show two low-price options, a median-price option, and one near the ceiling when enough matches exist. When there are zero matches within budget, show the lowest price for an available matching model, if one exists.
+- **Catalog.** Look up named models for price and availability. For budget searches, join CSV rows by category ID and filter active products with stock. Use decimal arithmetic for prices and apply requested string type and amplification filters before counting. Show two low-price options, a median-price option, and one near the ceiling when enough matches exist. When there are zero matches within budget, show the lowest price for an available matching model, if one exists.
 - **Policy retrieval.** A short section index maps topics to pages in the eight-page manual. The model selects a page, and the tool returns its text and page number. The prompt asks for the source and for missing facts before applying conditional rules.
-- **Conversation and persona.** The assistant uses a friendly store voice and replies in the customer's language. History stays in memory for the current CLI session so follow-up questions can refer to previous turns.
+- **Conversation and persona.** Léo introduces himself as the store's AI assistant. His tone is cheerful, informal, and professional. He explains instrument features in terms of how the customer will use them and grounds product details in the catalog. Accessory requests are politely redirected because the store specializes in instruments. He replies in the customer's language. History stays in memory for the current CLI session so follow-up questions can refer to previous turns.
 
 ## Tests
 
@@ -39,7 +39,7 @@ The suite uses synthetic CSVs, a generated PDF, and a simulated model. It exerci
 
 ## Limitations and next steps
 
-The catalog is a local snapshot. The policy index is tied to the supplied PDF layout. Product-specific filters cover string type and amplification. The model can omit details or select an incorrect page, so the automated tests are complemented by live conversation checks. Individual order status is referred to store support. With more time, I would add authenticated order lookup and regression cases for policy grounding and multi-turn catalog searches.
+The catalog is a local snapshot. The policy index is tied to the supplied PDF layout. Product-specific filters cover string type and amplification. The model can omit details or select an incorrect page, so the automated tests are complemented by live conversation checks. Individual order status is referred to store support. With more time, I would add authenticated order lookup and evaluate tool selection, citations, budget constraints, and tone across a representative set of customer conversations.
 
 ## Use of coding assistants
 
