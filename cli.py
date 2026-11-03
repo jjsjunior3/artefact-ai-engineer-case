@@ -16,9 +16,18 @@ def run_chat(respond: Callable[[str], str]) -> None:
             print(f"Empório: {respond(message)}")
 
 
-def preview_response(message: str) -> str:
-    return f"[Prévia da interface] Mensagem recebida: {message}"
-
-
 if __name__ == "__main__":
-    run_chat(preview_response)
+    import argparse
+    from pathlib import Path
+
+    from agent import make_responder
+
+    parser = argparse.ArgumentParser(description="Empório da Música chat")
+    parser.add_argument("data_dir", type=Path)
+    parser.add_argument("manual", type=Path)
+    args = parser.parse_args()
+    try:
+        responder = make_responder(args.data_dir, args.manual)
+    except (KeyError, OSError) as error:
+        parser.exit(2, f"Configuration error: {error}\n")
+    run_chat(responder)

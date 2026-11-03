@@ -65,3 +65,38 @@ class PolicyTests(unittest.TestCase):
         pages = {4: "Online returns within seven days."}
         self.assertEqual(get_policy_page(pages, 4), {"page": 4, "text": pages[4]})
         self.assertEqual(get_policy_page(pages, 9), {"page": 9, "text": ""})
+
+class AgentRoutingTests(unittest.TestCase):
+    setUp = CatalogTests.setUp
+    write_table = CatalogTests.write_table
+
+    def test_routes_catalog_and_policy_calls(self):
+        from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+
+        from agent import build_graph
+
+        class FakeModel:
+            def bind_tools(self, tools):
+                return self
+
+            def invoke(self, messages):
+                if isinstance(messages[-1], ToolMessage):
+                    return AIMessage(content="Done")
+                return AIMessage(content="", tool_calls=[
+                    {"name": "search_catalog", "args": {"category": "Guitars", "ceiling": "550"}, "id": "catalog"},
+                    {"name": "read_policy", "args": {"page": 4}, "id": "policy"},
+                ])
+
+        import json
+
+        graph = build_graph(FakeModel(), self.data, {4: "Returns policy"})
+        result = graph.invoke({"messages": [HumanMessage(content="Show guitars and return policy")]})
+        evidence = {
+            message.tool_call_id: json.loads(message.content)
+            for message in result["messages"]
+            if isinstance(message, ToolMessage)
+        }
+        self.assertEqual(evidence["catalog"]["total"], 5)
+        self.assertEqual(evidence["policy"], {"page": 4, "text": "Returns policy"})
+        self.assertEqual(result["messages"][-1].content, "Done")
+
