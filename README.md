@@ -43,14 +43,12 @@ The catalog is a local snapshot. The policy index is tied to the supplied PDF la
 
 ### What I would build with one more week
 
-I would extend Léo from product advice to a guided shopping flow, using the store's existing commerce APIs where available.
+I would extend Léo from product advice to a guided shopping flow, using commerce APIs for inventory, reservations, and checkout.
 
 1. **Live inventory and product gallery.** Read current price and stock by SKU and show official product photos in the chat. Keep the CSV catalog available for local development and tests.
 2. **Session cart.** Let the customer add, remove, and review instruments as they compare options. Show quantities and the running total, and recheck stock and prices before the next step.
 3. **Reservation and checkout handoff.** Show the cart and ask the customer to confirm before calling the reservation API. Report a reservation only after the store confirms it, show its expiry when available, and direct the customer to the store's checkout to pay. Handle stock changes and retries without creating duplicate reservations.
 4. **End-to-end evaluation.** Test the journey from recommendation to checkout, including a product selling out, a price changing, and a customer retrying a reservation. Retain the existing budget, policy, and scope checks.
-
-If the store APIs were unavailable during that week, I would demonstrate the flow against a sandbox inventory and reservation service and document which steps require a production integration.
 
 ## Use of coding assistants
 
