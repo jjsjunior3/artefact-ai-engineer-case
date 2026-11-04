@@ -1,9 +1,10 @@
+import json
 import os
 from decimal import Decimal
 from pathlib import Path
 
 from dotenv import load_dotenv
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from langgraph.graph import START, MessagesState, StateGraph
@@ -83,6 +84,25 @@ For personal order status, direct the customer to the store's support channel.
     return graph.compile()
 
 
+def format_budget_result(evidence: dict) -> str:
+    def label(product):
+        price = f"{Decimal(product['price_brl']):,.2f}".translate(str.maketrans(",.", ".,"))
+        return f"{product['name']} por R$ {price}"
+
+    total = evidence["total"]
+    if total:
+        lines = [f"Encontrei {total} modelo(s) em estoque dentro do orçamento."]
+        lines.extend(f"- {label(product)}" for product in evidence["highlights"])
+        first = evidence["highlights"][0]
+        lines.append(f"Se sua prioridade é economizar, eu começaria pelo {first['name']}, a opção mais barata entre as compatíveis.")
+        return "\n\n".join(lines)
+
+    answer = "Não encontrei em estoque um modelo com essas características dentro do seu orçamento."
+    if candidate := evidence["above_budget_candidate"]:
+        answer += f" As opções compatíveis começam com {label(candidate)}."
+    return answer
+
+
 def make_responder(data_dir: Path, manual: Path):
     load_dotenv(Path(__file__).with_name(".env"), override=False)
     model = ChatOpenAI(
@@ -100,7 +120,13 @@ def make_responder(data_dir: Path, manual: Path):
             {"messages": [*history, HumanMessage(content=message)]},
             {"recursion_limit": 8},
         )
-        history[:] = result["messages"]
+        messages = result["messages"]
+        for item in reversed(messages[len(history) + 1:]):
+            if isinstance(item, ToolMessage) and item.name == "search_catalog" and item.status == "success":
+                answer = format_budget_result(json.loads(item.content))
+                messages[-1] = messages[-1].model_copy(update={"content": answer})
+                break
+        history[:] = messages
         return history[-1].content
 
     return respond

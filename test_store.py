@@ -117,3 +117,19 @@ class AgentRoutingTests(unittest.TestCase):
         self.assertEqual(evidence["policy"], {"page": 4, "text": "Returns policy"})
         self.assertEqual(result["messages"][-1].content, "Done")
 
+
+class BudgetPresentationTests(unittest.TestCase):
+    def test_budget_response_omits_extra_when_matches_exist(self):
+        from agent import format_budget_result
+
+        extra = {"name": "Extra", "price_brl": "1199"}
+        evidence = {
+            "total": 1,
+            "highlights": [{"name": "Giannini", "price_brl": "1049"}],
+            "above_budget_candidate": extra,
+        }
+        answer = format_budget_result(evidence)
+        self.assertIn("Giannini por R$ 1.049,00", answer)
+        self.assertNotIn("Extra", answer)
+        fallback = format_budget_result({"total": 0, "highlights": [], "above_budget_candidate": extra})
+        self.assertIn("Extra por R$ 1.199,00", fallback)
