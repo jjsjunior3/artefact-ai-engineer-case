@@ -1,6 +1,6 @@
 # Empório da Música
 
-A Python CLI for a fictional music store. The assistant searches the in-stock catalog, explains store policies with page references, and redirects unrelated questions.
+Léo is a Python AI assistant for a fictional music store, available through a Streamlit browser chat and a command-line interface (CLI). The assistant searches the in-stock catalog, explains store policies with page references, and redirects unrelated questions.
 
 [Live CLI examples in English](examples-en.md) · [Original Portuguese excerpts](examples.md) · [Catalog selection rules](catalog-design.md)
 
@@ -20,6 +20,17 @@ python cli.py "/path/to/data" "/path/to/store-policy.pdf"
 ```
 
 Before launching the CLI, copy `.env.example` to `.env` in the repository root and set `OPENROUTER_API_KEY`. The file is ignored by Git. The default model is `openai/gpt-4.1-mini`. An existing environment variable takes precedence over the local file. Type `sair` to exit.
+
+### Streamlit browser chat
+
+Install the optional dependency and run the Streamlit chat with the same paths and configuration as the CLI.
+
+```bash
+python -m pip install -r requirements-web.txt
+python -m streamlit run web.py -- "/path/to/data" "/path/to/store-policy.pdf"
+```
+
+The browser chat uses the same LangGraph agent and keeps each conversation in its own Streamlit session.
 
 ## Architecture and decisions
 
@@ -53,14 +64,3 @@ I would extend Léo from product advice to a guided shopping flow, using commerc
 ## Use of coding assistants
 
 I used Codex to inspect the challenge files, implement and test the CLI, catalog and policy tools, integrate LangGraph, and document the project. I chose the CLI and shaped the recommendation rules, including the selection across price points and the starting-price fallback when nothing matches the budget. Live tests informed changes to catalog filtering and policy citation instructions.
-
-## Optional browser interface
-
-Install the optional dependency and run the Streamlit chat with the same paths and configuration as the CLI.
-
-```bash
-python -m pip install -r requirements-web.txt
-python -m streamlit run web.py -- "/path/to/data" "/path/to/store-policy.pdf"
-```
-
-The browser chat uses the same LangGraph agent and keeps each conversation in its own Streamlit session.
