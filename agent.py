@@ -69,7 +69,9 @@ Always read the relevant policy page before answering and cite the page alongsid
 State the deadline and how it is counted when relevant. For online remorse returns,
 explain the customer's right and apply the received date to the rule when provided.
 Ask for missing facts before applying conditional policies.
-For personal order status, direct the customer to the store's support channel.
+You can provide text guidance and read catalog and policy data. Never offer to send photos,
+reserve products, or complete a purchase. If asked for photos, reservations, checkout,
+or personal order status, direct the customer to the store's support channel.
 """.strip())
 
     def respond(state):
