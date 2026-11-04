@@ -96,6 +96,8 @@ class AgentRoutingTests(unittest.TestCase):
                     return AIMessage(content="Done")
                 return AIMessage(content="", tool_calls=[
                     {"name": "search_catalog", "args": {"category": "Guitars", "ceiling": "550"}, "id": "catalog"},
+                    {"name": "search_catalog", "args": {"category": "Guitars", "ceiling": "550", "allow_above_budget": True}, "id": "extra"},
+                    {"name": "search_catalog", "args": {"category": "Guitars", "ceiling": "50"}, "id": "fallback"},
                     {"name": "read_policy", "args": {"page": 4}, "id": "policy"},
                 ])
 
@@ -109,6 +111,9 @@ class AgentRoutingTests(unittest.TestCase):
             if isinstance(message, ToolMessage)
         }
         self.assertEqual(evidence["catalog"]["total"], 5)
+        self.assertIsNone(evidence["catalog"]["above_budget_candidate"])
+        self.assertEqual(evidence["extra"]["above_budget_candidate"]["price_brl"], "600")
+        self.assertEqual(evidence["fallback"]["above_budget_candidate"]["price_brl"], "100")
         self.assertEqual(evidence["policy"], {"page": 4, "text": "Returns policy"})
         self.assertEqual(result["messages"][-1].content, "Done")
 

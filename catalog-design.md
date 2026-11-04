@@ -4,7 +4,7 @@ For a category and a price ceiling, count all active products with positive stoc
 
 Show up to four distinct products: the two cheapest, an intermediate option close to the median price, and the highest-priced option within budget. Show every match when there are four or fewer.
 
-Consider the cheapest product above budget separately, up to 10% over the ceiling. Show it only when catalog evidence supports a feature relevant to the customer. State the additional cost and the feature. The catalog provides no purchase cost for calculating margin.
+Consider the cheapest product above budget separately, up to 10% over the ceiling. Expose it to the model only when the customer explicitly asks for options above budget. Show it only when catalog evidence supports a feature relevant to the customer. State the additional cost and the feature. The catalog provides no purchase cost for calculating margin.
 
 When no in-budget product matches the requested characteristics, report zero matches
 and show the cheapest in-stock match as the starting price, even beyond the 10% range.
