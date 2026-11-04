@@ -17,13 +17,13 @@ class CatalogTests(unittest.TestCase):
         self.data = Path(directory.name)
         self.write_table("categories", ["category_id", "name"], [(1, "Guitars")])
         products = [
-            (number, number * 100, 1, "active", 1)
+            (number, number * 100, 1, "active", 1, f"Guitar {number}")
             for number in range(1, 8)
         ]
-        products.extend([(8, 50, 1, "active", 0), (9, 60, 1, "inactive", 1)])
+        products.extend([(8, 50, 1, "active", 0, "Sold out"), (9, 60, 1, "inactive", 1, "Inactive")])
         self.write_table(
             "products",
-            ["product_id", "price_brl", "category_id", "status", "stock_quantity"],
+            ["product_id", "price_brl", "category_id", "status", "stock_quantity", "name"],
             products,
         )
 
@@ -117,6 +117,38 @@ class AgentRoutingTests(unittest.TestCase):
         self.assertEqual(evidence["policy"], {"page": 4, "text": "Returns policy"})
         self.assertEqual(result["messages"][-1].content, "Done")
 
+
+
+    def test_responder_replaces_model_budget_prose_with_catalog_results(self):
+        from unittest.mock import patch
+
+        from langchain_core.messages import AIMessage, ToolMessage
+
+        from agent import make_responder
+
+        class FakeModel:
+            def bind_tools(self, tools):
+                return self
+
+            def invoke(self, messages):
+                if isinstance(messages[-1], ToolMessage):
+                    return AIMessage(content="I recommend an unverified model for R$ 999.")
+                return AIMessage(content="", tool_calls=[
+                    {"name": "search_catalog", "args": {"category": "Guitars", "ceiling": "550"}, "id": "budget"},
+                ])
+
+        with (
+            patch.dict("os.environ", {"OPENROUTER_API_KEY": "test"}),
+            patch("agent.ChatOpenAI", return_value=FakeModel()),
+            patch("agent.load_policy_pages", return_value={}),
+        ):
+            respond = make_responder(self.data, Path("unused.pdf"))
+            answer = respond("Which guitars cost up to R$ 550?")
+
+        self.assertIn("Encontrei 5", answer)
+        self.assertIn("R$ 500,00", answer)
+        self.assertNotIn("unverified", answer)
+        self.assertNotIn("R$ 600,00", answer)
 
 class BudgetPresentationTests(unittest.TestCase):
     def test_budget_response_omits_extra_when_matches_exist(self):
